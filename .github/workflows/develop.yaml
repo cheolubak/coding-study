@@ -1,0 +1,43 @@
+name: CI/CD for Develop
+
+on:
+  push:
+    branches: [ 'develop' ]
+  pull_request:
+    branches: [ 'develop' ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 16.x ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Server Build
+        run: |
+          cd server
+          yarn
+          yarn build
+      - name: Web Build
+        run: |
+          cd web
+          yarn
+          yarn build
+
+  automerge:
+    runs-on: ubuntu-latest
+    needs: [ build ]
+    steps:
+      - id: automerge
+        if: ${{contains(github.event.*.labels.*.name, 'automerge')}}
+        name: automerge
+        uses: pascalgn/automerge-action@v0.15.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
