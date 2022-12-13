@@ -3,31 +3,73 @@ import {
   CreateDateColumn,
   Entity,
   OneToOne,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserProfile } from './user-profile.entity';
+import { Admin } from './admin.entity';
 
 @Entity('user')
 export class User {
-  @PrimaryColumn('int', { name: 'user_id' })
+  @PrimaryGeneratedColumn('increment', {
+    type: 'int',
+    name: 'id',
+    unsigned: true,
+    comment: '사용자 ID',
+  })
   userId: number;
 
-  @Column('varchar', { length: 32, name: 'uid' })
+  @Column({
+    type: 'varchar',
+    length: 32,
+    name: 'uid',
+    nullable: false,
+    comment: '사용자 FIREBASE UID',
+  })
   uid: string;
 
-  @Column('varchar', { length: 30, name: 'email' })
+  @Column({
+    type: 'varchar',
+    length: 30,
+    name: 'email',
+    nullable: true,
+    comment: '사용자 이메일',
+  })
   email: string;
 
-  @Column('varchar', { length: 20, name: 'nickname' })
+  @Column({
+    type: 'varchar',
+    length: 20,
+    name: 'nickname',
+    nullable: false,
+    comment: '사용자 닉네임',
+  })
   nickname: string;
 
-  @CreateDateColumn({ type: 'datetime', name: 'created_at' })
+  @Column({
+    type: 'varchar',
+    length: 100,
+    name: 'profile',
+    nullable: false,
+    comment: '사용자 프로필',
+  })
+  profile: string;
+
+  @CreateDateColumn({
+    type: 'datetime',
+    name: 'created_at',
+    nullable: false,
+    comment: '사용자 등록 일시',
+  })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'datetime', name: 'updated_at' })
+  @UpdateDateColumn({
+    type: 'datetime',
+    name: 'updated_at',
+    nullable: false,
+    comment: '사용자 수정 일시',
+  })
   updatedAt: Date;
 
-  @OneToOne(() => UserProfile, (userProfile) => userProfile.user)
-  userProfile?: UserProfile;
+  @OneToOne(() => Admin, (admin) => admin.user)
+  admin?: Admin;
 }
