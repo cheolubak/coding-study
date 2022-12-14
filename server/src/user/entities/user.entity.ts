@@ -33,8 +33,9 @@ export class User {
     name: 'email',
     nullable: true,
     comment: '사용자 이메일',
+    unique: true,
   })
-  email: string;
+  email?: string;
 
   @Column({
     type: 'varchar',
@@ -72,4 +73,8 @@ export class User {
 
   @OneToOne(() => Admin, (admin) => admin.user)
   admin?: Admin;
+
+  constructor(partial?: Partial<User>) {
+    Object.assign(this, partial);
+  }
 }
